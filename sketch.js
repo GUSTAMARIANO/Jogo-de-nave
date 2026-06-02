@@ -4,7 +4,7 @@ let estrelas = [];
 let chuva_meteoros = [];
 
 //Tela
-let tela = 4;
+let tela = 1;
 // 1 - tela de menu
 // 0 - tela de jogo
 // 2 - tela de game over
@@ -12,10 +12,10 @@ let tela = 4;
 // 4 - tela de créditos
 
 //Tamanho da tela
-let w = 900, h = 900;
+let w = window.innerWidth, h = window.innerHeight;
 
 //Posição inicial da nave
-var x1 = 420, y1 = 700;
+var x1 = w / 2 - 20, y1 = 700;
 
 //textos utilizados
 var texto = "Objetivo do jogo\n\nControle sua nave espacial e desvie dos meteoros\npelo maior tempo possível. Use as setas do teclado \npara movimentar a nave e teste seus reflexos em meio \nà chuva de meteoros no espaço.";
@@ -26,6 +26,7 @@ var velocidade = 3;
 // variavel de colisão
 let isHit = false;
 
+var botaoW = w / 2 - 75;
 //carregamento das imagens
 let foguete;
 let meteoro_img;
@@ -52,7 +53,9 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(h, w);
+  createCanvas(w, h);
+  console.log(w);
+  console.log(x1);
   //Carrega e esconde o video
   video = createVideo(['videos/gameplay.mp4']);
   video.hide();
@@ -60,7 +63,7 @@ function setup() {
   angleMode(DEGREES);
 
   // Cria o objeto estrela
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 120; i++) {
     // Adiciona o objeto ao array
     estrelas.push(new Estrela());
   }
@@ -94,34 +97,38 @@ function draw() {
   } else {
     video.hide();
   }
-
+  console.log(x1 + " " + y1);
 }
 
-function criarBotao(posX, posY, largura, altura, radius, texto) {
+function criarBotao(posX, posY, texto) {
   fill("white");
-  rect(posX, posY, largura, altura, radius);
+  rect(posX, posY, 160, 40, 20);
   fill("red");
   textSize(20);
   textAlign(CENTER, CENTER);
-  text(texto, posX + largura / 2, posY + altura / 2);
+  text(texto, posX + 160 / 2, posY + 40 / 2);
+}
+
+function gerarPersonagem(pos_x, pos_y) {
+  fill(0, 0, 0, 0);
+  rect(pos_x, pos_y, 40, 66, 20);
+  image(foguete, pos_x, pos_y, 40, 66);
 }
 //-----------------------TELAS-----------------------
 function tela_principal() {
   //titulo do jogo
-  image(titulo, 100, 20, 600, 500);
+  image(titulo, w / 2 - 300, 20, 600, 500);
 
   //Botão jogar
-  criarBotao(350, 480, 100, 30, 20, "INICIAR");
+  criarBotao(botaoW, 480, "INICIAR");
   //Botão instruções
-  criarBotao(350, 520, 100, 30, 20, "Instruções");
+  criarBotao(botaoW, 530, "Instruções");
   //Botão créditos
-  criarBotao(350, 560, 100, 30, 20, "Créditos");
+  criarBotao(botaoW, 580, "Créditos");
 }
 
 function tela_deJogo() {
-  fill(0, 0, 0, 0);
-  rect(x1, y1, 40, 66, 20);
-  image(foguete, x1, y1, 40, 66);
+  gerarPersonagem(x1, y1);
   controle(0, 0, w, h);
 }
 
@@ -129,13 +136,13 @@ function tela_gameOver() {
   textAlign(CENTER, CENTER);
   fill("red");
   textSize(80)
-  text("GAME OVER", 450, 300);
+  text("GAME OVER", w / 2, 300);
 
   //Botão jogar novamente
-  criarBotao(350, 400, 160, 30, 20, "Jogar novamente");
+  criarBotao(botaoW, 400, "Jogar novamente");
 
   //Botão voltar ao menu
-  criarBotao(350, 450, 160, 30, 20, "Voltar ao menu");
+  criarBotao(botaoW, 450, "Voltar ao menu");
 }
 
 function tela_intrucoes() {
@@ -200,19 +207,17 @@ function mouseClicked() {
   //------------------------TELA PRINCIPAL------------------------
   if (tela == 1) {
     //Botão iniciar
-    if (mouseX >= 350 && mouseX < 450 && mouseY >= 480 && mouseY < 510) {
-      x1 = 420;
-      y1 = 700;
+    if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 480 && mouseY < 520) {
       tela = 0;
     }
     //Botão Instruções
-    if (mouseX >= 350 && mouseX < 450 && mouseY >= 520 && mouseY < 550) {
+    if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 530 && mouseY < 570) {
       tela = 3;
       x1 = 750;
       y1 = 200;
     }
     //Botão Créditos
-    if (mouseX >= 350 && mouseX < 450 && mouseY >= 560 && mouseY < 590) {
+    if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 560 && mouseY < 590) {
       tela = 4;
 
     }
@@ -220,15 +225,15 @@ function mouseClicked() {
   //------------------------TELA GAME OVER------------------------
   if (tela == 2) {
      //Botão Jogar novamente
-    if (mouseX >= 350 && mouseX <= 510 && mouseY >= 500 && mouseY <= 530) {
-      x1 = 420;
-      y1 = 700;
+    if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 400 && mouseY < 440) {
       tela = 0;
+      x1 = w / 2 - 20, y1 = 700;
       reinicar();
     }
     //Botão Voltar ao menu
-    if (mouseX >= 350 && mouseX <= 510 && mouseY >= 550 && mouseY <= 580) {
+    if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 450 && mouseY < 490) {
       tela = 1;
+      x1 = w / 2 - 20, y1 = 700;
       reinicar();
     }
   }
