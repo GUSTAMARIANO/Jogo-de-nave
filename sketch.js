@@ -4,7 +4,7 @@ let estrelas = [];
 let chuva_meteoros = [];
 
 //Tela
-let tela = 4;
+let tela = 1;
 // 1 - tela de menu
 // 0 - tela de jogo
 // 2 - tela de game over
