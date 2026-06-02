@@ -220,19 +220,19 @@ function mouseClicked() {
   //------------------------TELA GAME OVER------------------------
   if (tela == 2) {
      //Botão Jogar novamente
-    if (mouseX >= 350 && mouseX <= 510 && mouseY >= 500 && mouseY <= 530) {
+    if (mouseX >= 350 && mouseX <= 510 && mouseY >= 400 && mouseY <= 430) {
       x1 = 420;
       y1 = 700;
       tela = 0;
       reinicar();
     }
     //Botão Voltar ao menu
-    if (mouseX >= 350 && mouseX <= 510 && mouseY >= 550 && mouseY <= 580) {
+    if (mouseX >= 350 && mouseX <= 510 && mouseY >= 450 && mouseY <= 480) {
       tela = 1;
       reinicar();
     }
   }
-
+  // ------------------------TELA INSTRUÇÕES E CRÉDITOS------------------------
   //Botão voltar
   if (tela == 3 || tela == 4) {
     if (mouseX >= 20 && mouseX < 72 && mouseY >= 20 && mouseY < 40) {
