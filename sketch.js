@@ -26,6 +26,9 @@ var velocidade = 3;
 // variavel de colisão
 let isHit = false;
 
+//Variavel de pontuação
+var pontos = 0;
+
 var botaoW = w / 2 - 75;
 //carregamento das imagens
 let foguete;
@@ -54,8 +57,6 @@ function preload() {
 
 function setup() {
   createCanvas(w, h);
-  console.log(w);
-  console.log(x1);
   //Carrega e esconde o video
   video = createVideo(['videos/gameplay.mp4']);
   video.hide();
@@ -97,7 +98,7 @@ function draw() {
   } else {
     video.hide();
   }
-  console.log(x1 + " " + y1);
+  
 }
 
 function criarBotao(posX, posY, texto) {
@@ -127,9 +128,15 @@ function tela_principal() {
   criarBotao(botaoW, 580, "Créditos");
 }
 
+
 function tela_deJogo() {
   gerarPersonagem(x1, y1);
   controle(0, 0, w, h);
+  pontos++;
+  fill("white");
+  textSize(20);
+  textAlign(LEFT, TOP);
+  text("Pontos: " + pontos, 20, 20);
 }
 
 function tela_gameOver() {
@@ -137,6 +144,11 @@ function tela_gameOver() {
   fill("red");
   textSize(80)
   text("GAME OVER", w / 2, 300);
+
+  //Exibi pontuação final
+  fill("white");
+  textSize(30);
+  text("Pontos: " + pontos, w / 2, 360);
 
   //Botão jogar novamente
   criarBotao(botaoW, 400, "Jogar novamente");
@@ -152,40 +164,39 @@ function tela_intrucoes() {
     image(seta_esquerda, 15, 10, 72, 40);
   }
 
-  image(teclas, 200, 130, 240, 156);
+  image(teclas, w / 2  - 500, 130, 240, 156);
   textSize(30);
   textAlign(CENTER,CENTER);
-  text("Controles", 400, 90);
+  text("Controles", w / 2, 90);
 
   textSize(20);
-  text("Para Frente", 480, 165);
-  image(seta_direita, 370, 155, 52, 20);
+  text("Para Frente", w / 2 - 200, 165);
+  image(seta_direita, w / 2 - 320, 155, 52, 20);
 
-  text("Direita", 530, 245);
-  image(seta_direita, 445, 235, 52, 20);
+  text("Direita", w / 2 - 150, 245);
+  image(seta_direita, w / 2 - 240, 235, 52, 20);
 
-  text("Esquerda", 85, 245);
-  image(seta_esquerda, 140, 235, 52, 20);
+  text("Esquerda", w / 2 - 630, 245);
+  image(seta_esquerda, w /2 - 575, 235, 52, 20);
 
-  image(seta_baixo, 315, 290, 20, 52);
-  text("Para trás", 315, 360);
+  image(seta_baixo, w / 2 - 390, 290, 20, 52);
+  text("Para trás", w / 2 - 390, 360);
 
   //Texto com o objetivo do jogo
   textAlign(LEFT, TOP);
-  text(texto, 30, 600);
+  text(texto, w / 2 - 630, 600);
 
   //Gera a nave e o controle para teste
-  fill(0, 0, 0, 0);
-  rect(x1, y1, 40, 66, 20)
-  image(foguete, x1, y1, 40, 66);
-  controle(700, 130, 856, 286);
+  gerarPersonagem(x1, y1);
+  
+  controle(w / 2 + 200, 130, w / 2 + 356, 286);
   //Area de teste do controle
   stroke("white");
-  rect(700, 130, 156, 156);
+  rect(w / 2 + 200, 130, 156, 156);
 
   //Configurações do video
   video.size(300, 350);
-  video.position(575, 500);
+  video.position(w / 2 + 100, 500);
   video.style('border', '2px solid white');
   video.loop();
 }
@@ -196,11 +207,11 @@ function tela_creditos() {
     image(seta_esquerda, 15, 10, 72, 40);
   }
   //Area com os créditos
-  image(perfil, 30, 250, 144, 144);
-  textSize(30);
-  textAlign(LEFT, TOP);
-  text("Luiz Gustavo Silva Mariano", 180, 250);
-  text("Função: Programador", 180, 300);
+  image(perfil, w / 2 - 72, 250, 144, 144);
+  textSize(50);
+  textAlign(CENTER,CENTER);
+  text("Luiz Gustavo Silva Mariano", w / 2, 420);
+  text("Função: Programador", w / 2, 470);
 }
 
 function mouseClicked() {
@@ -213,13 +224,13 @@ function mouseClicked() {
     //Botão Instruções
     if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 530 && mouseY < 570) {
       tela = 3;
-      x1 = 750;
+      x1 = w / 2 + 260;
       y1 = 200;
     }
     //Botão Créditos
-    if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 560 && mouseY < 590) {
+    if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 580 && mouseY < 620) {
       tela = 4;
-
+      console.log("créditos");
     }
   }
   //------------------------TELA GAME OVER------------------------
@@ -228,20 +239,21 @@ function mouseClicked() {
     if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 400 && mouseY < 440) {
       tela = 0;
       x1 = w / 2 - 20, y1 = 700;
-      reinicar();
+      reiniciar();
     }
     //Botão Voltar ao menu
     if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 450 && mouseY < 490) {
       tela = 1;
       x1 = w / 2 - 20, y1 = 700;
-      reinicar();
+      reiniciar();
     }
   }
 
-  //Botão voltar
+  //Botão voltar na tela de instruções e créditos
   if (tela == 3 || tela == 4) {
     if (mouseX >= 20 && mouseX < 72 && mouseY >= 20 && mouseY < 40) {
       tela = 1;
+      reiniciar();
     }
   }
 }
@@ -277,11 +289,14 @@ function controle(inicioX, inicioY, limiteX, limiteY) {
 }
 
 //Função para reiniciar a posição dos meteoros e a variável de colisão
-function reinicar() {
+function reiniciar() {
   for (let i = 0; i < chuva_meteoros.length; i++) {
     chuva_meteoros[i].resetar();
   }
   isHit = false;
+  pontos = 0;
+  x1 = w / 2 - 20; 
+  y1 = 700;
 }
 
 //Gera o efeito de chuva de meteoros e estrelas
@@ -301,6 +316,11 @@ function espaco() {
       meteor.display();
       meteor.isColission();
     }
+  }
+
+  if (currentTime > 10) {
+    ySpeed = 1000;
+    console.log("aumentou a velocidade" + ySpeed);
   }
 }
 
