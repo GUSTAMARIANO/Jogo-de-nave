@@ -2,11 +2,12 @@
 // array que armazena os objetos
 let estrelas = [];
 let chuva_meteoros = [];
+let recordes = [];
 
 //Tela
 let tela = 1;
 // 1 - tela de menu
-// 0 - tela de jogo
+// 5 - tela de jogo
 // 2 - tela de game over
 // 3 - tela de Intruções
 // 4 - tela de créditos
@@ -29,7 +30,11 @@ let isHit = false;
 //Variavel de pontuação
 var pontos = 0;
 
+var nameInput;
+
+
 var botaoW = w / 2 - 75;
+//-------------------------------------------------------------------------------------------------------------
 //carregamento das imagens
 let foguete;
 let meteoro_img;
@@ -41,6 +46,7 @@ let seta_esquerda;
 let video;
 let perfil;
 let titulo;
+let audio_background;
 
 function preload() {
   foguete = loadImage('Imagens/foguete.png');
@@ -52,6 +58,7 @@ function preload() {
   seta_esquerda = loadImage('Imagens/esquerda.png');
   perfil = loadImage('Imagens/minha_foto.webp');
   titulo = loadImage('Imagens/titulo.png');
+  audio_background = loadSound('Audios/soundback.mp3');
 
 }
 
@@ -60,6 +67,11 @@ function setup() {
   //Carrega e esconde o video
   video = createVideo(['videos/gameplay.mp4']);
   video.hide();
+  audio_background.setVolume(0.1);
+  if (!audio_background.isPlaying()) {
+    audio_background.play();
+  }
+
   //Alteração de angulos radianos para graus
   angleMode(DEGREES);
 
@@ -73,14 +85,17 @@ function setup() {
   for (let j = 0; j < 10; j++) {
     chuva_meteoros.push(new Meteoro());
   }
+
+
 }
 
 function draw() {
   background("black");
   espaco();
 
+
   //Controle de telas
-  if (tela == 0) {
+  if (tela == 5) {
     tela_deJogo();
   } else if (tela == 1) {
     tela_principal();
@@ -92,13 +107,18 @@ function draw() {
     tela_creditos();
   }
 
+
+
   //Controle de exibição do video
   if (tela == 3) {
     video.show();
   } else {
     video.hide();
   }
-  
+
+  if (!audio_background.isPlaying()) {
+    audio_background.loop();
+  }
 }
 
 function criarBotao(posX, posY, texto) {
@@ -126,6 +146,9 @@ function tela_principal() {
   criarBotao(botaoW, 530, "Instruções");
   //Botão créditos
   criarBotao(botaoW, 580, "Créditos");
+  userStartAudio();
+
+  
 }
 
 
@@ -142,7 +165,7 @@ function tela_deJogo() {
 function tela_gameOver() {
   textAlign(CENTER, CENTER);
   fill("red");
-  textSize(80)
+  textSize(80);
   text("GAME OVER", w / 2, 300);
 
   //Exibi pontuação final
@@ -155,6 +178,8 @@ function tela_gameOver() {
 
   //Botão voltar ao menu
   criarBotao(botaoW, 450, "Voltar ao menu");
+
+
 }
 
 function tela_intrucoes() {
@@ -164,9 +189,9 @@ function tela_intrucoes() {
     image(seta_esquerda, 15, 10, 72, 40);
   }
 
-  image(teclas, w / 2  - 500, 130, 240, 156);
+  image(teclas, w / 2 - 500, 130, 240, 156);
   textSize(30);
-  textAlign(CENTER,CENTER);
+  textAlign(CENTER, CENTER);
   text("Controles", w / 2, 90);
 
   textSize(20);
@@ -177,7 +202,7 @@ function tela_intrucoes() {
   image(seta_direita, w / 2 - 240, 235, 52, 20);
 
   text("Esquerda", w / 2 - 630, 245);
-  image(seta_esquerda, w /2 - 575, 235, 52, 20);
+  image(seta_esquerda, w / 2 - 575, 235, 52, 20);
 
   image(seta_baixo, w / 2 - 390, 290, 20, 52);
   text("Para trás", w / 2 - 390, 360);
@@ -188,7 +213,7 @@ function tela_intrucoes() {
 
   //Gera a nave e o controle para teste
   gerarPersonagem(x1, y1);
-  
+
   controle(w / 2 + 200, 130, w / 2 + 356, 286);
   //Area de teste do controle
   stroke("white");
@@ -209,7 +234,7 @@ function tela_creditos() {
   //Area com os créditos
   image(perfil, w / 2 - 72, 250, 144, 144);
   textSize(50);
-  textAlign(CENTER,CENTER);
+  textAlign(CENTER, CENTER);
   text("Luiz Gustavo Silva Mariano", w / 2, 420);
   text("Função: Programador", w / 2, 470);
 }
@@ -219,7 +244,12 @@ function mouseClicked() {
   if (tela == 1) {
     //Botão iniciar
     if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 480 && mouseY < 520) {
-      tela = 0;
+      tela = 5;
+      userStartAudio();
+
+      /*if (!audio_background.isPlaying()) {
+        audio_background.loop();
+      }*/
     }
     //Botão Instruções
     if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 530 && mouseY < 570) {
@@ -235,9 +265,9 @@ function mouseClicked() {
   }
   //------------------------TELA GAME OVER------------------------
   if (tela == 2) {
-     //Botão Jogar novamente
+    //Botão Jogar novamente
     if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 400 && mouseY < 440) {
-      tela = 0;
+      tela = 5;
       x1 = w / 2 - 20, y1 = 700;
       reiniciar();
     }
@@ -257,6 +287,8 @@ function mouseClicked() {
     }
   }
 }
+
+
 
 
 //Movimentação da nave
@@ -295,7 +327,7 @@ function reiniciar() {
   }
   isHit = false;
   pontos = 0;
-  x1 = w / 2 - 20; 
+  x1 = w / 2 - 20;
   y1 = 700;
 }
 
@@ -310,7 +342,7 @@ function espaco() {
     star.display();
   }
   //Se na tela de jogo, carrega os meteoros
-  if (tela == 0) {
+  if (tela == 5) {
     for (let meteor of chuva_meteoros) {
       meteor.update(currentTime);
       meteor.display();
@@ -320,7 +352,23 @@ function espaco() {
 
   if (currentTime > 10) {
     ySpeed = 1000;
-    console.log("aumentou a velocidade" + ySpeed);
+    //console.log("aumentou a velocidade" + ySpeed);
+  }
+}
+
+function registrarPontuacao() {
+  if (nameInput.value() === '') {
+    alert("Por favor, digite um nome para registrar sua pontuação.");
+    return;
+  } else {
+    if (recordes.length != 20) {
+      //nameInput = prompt("Digite seu nome para registrar sua pontuação:");
+      recordes.push(nameInput.value(), pontos);
+    }
+    console.log(recordes);
+    nameInput.remove();
+    submitButton.hide();
+    //submitButton.remove();
   }
 }
 
@@ -394,7 +442,7 @@ class Meteoro {
       this.posY = -50;
     }
   }
- 
+
   //Exibir os meteoros
   display() {
     fill(0, 0, 0, 0);
@@ -405,7 +453,7 @@ class Meteoro {
 
   //Verifica se houve colisão entre o meteoro e a nave usando a função collideRectCircle da biblioteca p5.collide2D
   isColission() {
-   //posição da nave no momento da colisão
+    //posição da nave no momento da colisão
     var rx = x1;
     var ry = y1;
     var rw = 40;
@@ -423,8 +471,14 @@ class Meteoro {
     );
 
     if (isHit) {
+
+      nameInput = createInput();
+      nameInput.position(20, 50);
+      var submitButton = createButton('Registrar');
+      submitButton.position(nameInput.x + nameInput.width, nameInput.y);
+      submitButton.mousePressed(registrarPontuacao);
+      
       tela = 2;
-      console.log("bateu!");
     }
   }
 }
