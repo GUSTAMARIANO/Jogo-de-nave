@@ -2,7 +2,8 @@
 // array que armazena os objetos
 let estrelas = [];
 let chuva_meteoros = [];
-let recordes = [];
+let recorde_pontos = [];
+let recorde_player = [];
 
 //Tela
 let tela = 1;
@@ -31,7 +32,7 @@ let isHit = false;
 var pontos = 0;
 
 var nameInput;
-
+var submitButton;
 
 var botaoW = w / 2 - 75;
 //-------------------------------------------------------------------------------------------------------------
@@ -361,13 +362,15 @@ function registrarPontuacao() {
     alert("Por favor, digite um nome para registrar sua pontuação.");
     return;
   } else {
-    if (recordes.length != 20) {
+    if (recorde_pontos.length != 10) {
       //nameInput = prompt("Digite seu nome para registrar sua pontuação:");
-      recordes.push(nameInput.value(), pontos);
+      recorde_pontos.push(pontos);
+      recorde_player.push(nameInput.value());
     }
-    console.log(recordes);
+    console.log(recorde_pontos);
+    console.log(recorde_player);
     nameInput.remove();
-    submitButton.hide();
+    submitButton.remove();
     //submitButton.remove();
   }
 }
@@ -474,7 +477,7 @@ class Meteoro {
 
       nameInput = createInput();
       nameInput.position(20, 50);
-      var submitButton = createButton('Registrar');
+      submitButton = createButton('Registrar');
       submitButton.position(nameInput.x + nameInput.width, nameInput.y);
       submitButton.mousePressed(registrarPontuacao);
       
