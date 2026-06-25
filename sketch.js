@@ -88,7 +88,28 @@ function setup() {
     chuva_meteoros.push(new Meteoro());
   }
 
+  let savedData = getItem('recordes_pontos');
 
+  // If no data has been saved yet
+  if (savedData === null) {
+    // Use an empty array to start
+    loadDataPontos([]);
+  } else {
+    // Otherwise convert the data to Bubble objects
+    loadDataPontos(savedData);
+  }
+
+  savedData = getItem('recordes_player');
+  
+
+  // If no data has been saved yet
+  if (savedData === null) {
+    // Use an empty array to start
+    loadDataPlayer([]);
+  } else {
+    // Otherwise convert the data to Bubble objects
+    loadDataPlayer(savedData);
+  }
 }
 
 function draw() {
@@ -110,6 +131,8 @@ function draw() {
   } else if (tela == 6) {
     tela_recordes();
   }
+  
+
 
 
 
@@ -125,6 +148,33 @@ function draw() {
     audio_background.loop();
   }
 }
+
+function setDataPontos() {
+  
+    localStorage.setItem('recordes_pontos', JSON.stringify(recorde_pontos));
+  
+  
+}
+function setDataPlayer() {
+  
+    localStorage.setItem('recordes_player', JSON.stringify(recorde_player));
+  
+}
+
+function loadDataPontos(data) {
+  console.log(data);
+  for (let i = 0; i < data.length; i++) {
+  recorde_pontos.push(data[i]);
+  }
+  console.log("recorde_pontos carregado: " + recorde_pontos);
+}
+function loadDataPlayer(data) {
+  for (let i = 0; i < data.length; i++) {
+  recorde_player.push(data[i]);
+  }
+  console.log("recorde_player carregado: " + recorde_player);
+}
+
 
 function criarBotao(posX, posY, texto) {
   fill("white");
@@ -419,6 +469,8 @@ function registrarPontuacao() {
         }
         console.log(recorde_pontos);
         console.log(recorde_player);
+        setDataPontos();
+        setDataPlayer();
       }
     }
     nameInput.remove();
