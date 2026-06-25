@@ -6,12 +6,13 @@ let recorde_pontos = [];
 let recorde_player = [];
 
 //Tela
-let tela = 1;
+let tela = 6;
 // 1 - tela de menu
-// 5 - tela de jogo
 // 2 - tela de game over
 // 3 - tela de Intruções
 // 4 - tela de créditos
+// 5 - tela de jogo
+// 6 - tela de recordes
 
 //Tamanho da tela
 let w = window.innerWidth, h = window.innerHeight;
@@ -106,7 +107,10 @@ function draw() {
     tela_intrucoes();
   } else if (tela == 4) {
     tela_creditos();
+  } else if (tela == 6) {
+    tela_recordes();
   }
+
 
 
 
@@ -147,9 +151,10 @@ function tela_principal() {
   criarBotao(botaoW, 530, "Instruções");
   //Botão créditos
   criarBotao(botaoW, 580, "Créditos");
+  criarBotao(botaoW, 630, "Recordes");
   userStartAudio();
 
-  
+
 }
 
 
@@ -239,6 +244,30 @@ function tela_creditos() {
   text("Luiz Gustavo Silva Mariano", w / 2, 420);
   text("Função: Programador", w / 2, 470);
 }
+function tela_recordes() {
+  image(seta_esquerda, 20, 20, 52, 20);
+  if (mouseX >= 20 && mouseX < 72 && mouseY >= 20 && mouseY < 40) {
+    image(seta_esquerda, 15, 10, 72, 40);
+  }
+  //Area com os recordes
+  textSize(50);
+  textAlign(CENTER, CENTER);
+  text("Recordes", w / 2, 100);
+  
+  if (recorde_pontos.length === 0) {
+    textSize(30);
+    textAlign(CENTER, CENTER);
+    text("Nenhum recorde registrado", w / 2, 200);
+  } else {
+    for (let i = 0; i < recorde_pontos.length; i++) {
+      textSize(30);
+      textAlign(LEFT, CENTER);
+      text(recorde_player[i], w / 2 - 100, 200 + i * 50);
+      textAlign(RIGHT, CENTER);
+      text(recorde_pontos[i], w / 2 + 100, 200 + i * 50);
+    }
+  }
+}
 
 function mouseClicked() {
   //------------------------TELA PRINCIPAL------------------------
@@ -263,6 +292,11 @@ function mouseClicked() {
       tela = 4;
       console.log("créditos");
     }
+    //Botão Recordes
+    if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 630 && mouseY < 670) {
+      tela = 6;
+      console.log("recordes");
+    }
   }
   //------------------------TELA GAME OVER------------------------
   if (tela == 2) {
@@ -281,7 +315,7 @@ function mouseClicked() {
   }
 
   //Botão voltar na tela de instruções e créditos
-  if (tela == 3 || tela == 4) {
+  if (tela == 3 || tela == 4 || tela == 6) {
     if (mouseX >= 20 && mouseX < 72 && mouseY >= 20 && mouseY < 40) {
       tela = 1;
       reiniciar();
@@ -366,9 +400,27 @@ function registrarPontuacao() {
       //nameInput = prompt("Digite seu nome para registrar sua pontuação:");
       recorde_pontos.push(pontos);
       recorde_player.push(nameInput.value());
+    } else if (pontos > recorde_pontos[recorde_pontos.length - 1]) {
+      recorde_pontos[recorde_pontos.length - 1] = pontos;
+      recorde_player[recorde_player.length - 1] = nameInput.value();
     }
-    console.log(recorde_pontos);
-    console.log(recorde_player);
+
+
+    for (let i = 0; i <= recorde_pontos.length; i++) {
+      for (let j = 0; j <= recorde_pontos.length; j++) {
+        if (recorde_pontos[i] > recorde_pontos[j]) {
+          var tempPontos = recorde_pontos[i];
+          var tempPlayer = recorde_player[i];
+          recorde_pontos[i] = recorde_pontos[j];
+          recorde_player[i] = recorde_player[j];
+          recorde_pontos[j] = tempPontos;
+          recorde_player[j] = tempPlayer;
+          //break;
+        }
+        console.log(recorde_pontos);
+        console.log(recorde_player);
+      }
+    }
     nameInput.remove();
     submitButton.remove();
     //submitButton.remove();
@@ -480,7 +532,7 @@ class Meteoro {
       submitButton = createButton('Registrar');
       submitButton.position(nameInput.x + nameInput.width, nameInput.y);
       submitButton.mousePressed(registrarPontuacao);
-      
+
       tela = 2;
     }
   }
