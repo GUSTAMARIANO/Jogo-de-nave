@@ -6,7 +6,7 @@ let recorde_pontos = [];
 let recorde_player = [];
 
 //Tela
-let tela = 6;
+let tela = 1;
 // 1 - tela de menu
 // 2 - tela de game over
 // 3 - tela de Intruções
