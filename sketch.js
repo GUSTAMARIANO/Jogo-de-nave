@@ -100,7 +100,7 @@ function setup() {
   }
 
   savedData = getItem('recordes_player');
-  
+
 
   // If no data has been saved yet
   if (savedData === null) {
@@ -131,7 +131,7 @@ function draw() {
   } else if (tela == 6) {
     tela_recordes();
   }
-  
+
 
 
 
@@ -150,28 +150,25 @@ function draw() {
 }
 
 function setDataPontos() {
-  
-    localStorage.setItem('recordes_pontos', JSON.stringify(recorde_pontos));
-  
-  
+  console.log("recorde_pontos: " + recorde_pontos);
+  localStorage.setItem('recordes_pontos', JSON.stringify(recorde_pontos));
+
+
 }
 function setDataPlayer() {
-  
-    localStorage.setItem('recordes_player', JSON.stringify(recorde_player));
-  
+
+  localStorage.setItem('recordes_player', JSON.stringify(recorde_player));
+
+
 }
 
 function loadDataPontos(data) {
-  console.log(data);
-  for (let i = 0; i < data.length; i++) {
-  recorde_pontos.push(data[i]);
-  }
+  recorde_pontos = JSON.parse(data);
   console.log("recorde_pontos carregado: " + recorde_pontos);
 }
+
 function loadDataPlayer(data) {
-  for (let i = 0; i < data.length; i++) {
-  recorde_player.push(data[i]);
-  }
+  recorde_player = JSON.parse(data);
   console.log("recorde_player carregado: " + recorde_player);
 }
 
@@ -303,7 +300,7 @@ function tela_recordes() {
   textSize(50);
   textAlign(CENTER, CENTER);
   text("Recordes", w / 2, 100);
-  
+
   if (recorde_pontos.length === 0) {
     textSize(30);
     textAlign(CENTER, CENTER);
@@ -340,12 +337,10 @@ function mouseClicked() {
     //Botão Créditos
     if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 580 && mouseY < 620) {
       tela = 4;
-      console.log("créditos");
     }
     //Botão Recordes
     if (mouseX >= botaoW && mouseX < botaoW + 160 && mouseY >= 630 && mouseY < 670) {
       tela = 6;
-      console.log("recordes");
     }
   }
   //------------------------TELA GAME OVER------------------------
@@ -467,12 +462,12 @@ function registrarPontuacao() {
           recorde_player[j] = tempPlayer;
           //break;
         }
-        console.log(recorde_pontos);
-        console.log(recorde_player);
-        setDataPontos();
-        setDataPlayer();
       }
     }
+    console.log(recorde_pontos);
+    console.log(recorde_player);
+    setDataPontos();
+    setDataPlayer();
     nameInput.remove();
     submitButton.remove();
     //submitButton.remove();
