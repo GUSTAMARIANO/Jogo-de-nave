@@ -1,5 +1,5 @@
 
-// array que armazena os objetos
+// vetores que armazena os objetos
 let estrelas = [];
 let chuva_meteoros = [];
 let recorde_pontos = [];
@@ -13,6 +13,7 @@ let tela = 1;
 // 4 - tela de créditos
 // 5 - tela de jogo
 // 6 - tela de recordes
+// 7 - tela novo recorde 
 
 //Tamanho da tela
 let w = window.innerWidth, h = window.innerHeight;
@@ -25,6 +26,7 @@ var texto = "Objetivo do jogo\n\nControle sua nave espacial e desvie dos meteoro
 
 //Velociade de movimento
 var velocidade = 3;
+var ySpeed = 4;
 
 // variavel de colisão
 let isHit = false;
@@ -89,24 +91,30 @@ function setup() {
   }
 
   let savedData = getItem('recordes_pontos');
+  let savedDatanull = [];
 
   // If no data has been saved yet
-  if (savedData === null) {
+  if (savedData == null || savedData == "") {
     // Use an empty array to start
+    console.log("Nenhum recorde encontrado" + savedData);
     loadDataPontos([]);
+
   } else {
     // Otherwise convert the data to Bubble objects
     loadDataPontos(savedData);
   }
 
   savedData = getItem('recordes_player');
+  console.log(savedData + "1");
 
 
   // If no data has been saved yet
-  if (savedData === null) {
+  if (savedData == null || savedData == "") {
     // Use an empty array to start
     loadDataPlayer([]);
+    console.log("Nenhum recorde de player encontrado");
   } else {
+    console.log("entrou")
     // Otherwise convert the data to Bubble objects
     loadDataPlayer(savedData);
   }
@@ -130,6 +138,8 @@ function draw() {
     tela_creditos();
   } else if (tela == 6) {
     tela_recordes();
+  } else if (tela == 7) {
+    tela_novoRecorde();
   }
 
 
@@ -163,13 +173,24 @@ function setDataPlayer() {
 }
 
 function loadDataPontos(data) {
-  recorde_pontos = JSON.parse(data);
-  console.log("recorde_pontos carregado: " + recorde_pontos);
+  //console.log(da)
+  if (data && data != "") {
+    console.log("teste " + JSON.stringify(data));
+    recorde_pontos = JSON.parse(data);
+
+    console.log("recorde_pontos carregado: " + recorde_pontos);
+  } else {
+    recorde_pontos = [];
+  }
 }
 
 function loadDataPlayer(data) {
-  recorde_player = JSON.parse(data);
-  console.log("recorde_player carregado: " + recorde_player);
+  if (data && data != "") {
+    recorde_player = JSON.parse(data);
+    console.log("recorde_player carregado: " + recorde_player);
+  } else {
+    recorde_player = [];
+  }
 }
 
 
@@ -309,11 +330,23 @@ function tela_recordes() {
     for (let i = 0; i < recorde_pontos.length; i++) {
       textSize(30);
       textAlign(LEFT, CENTER);
-      text(recorde_player[i], w / 2 - 100, 200 + i * 50);
+      text(recorde_player[i], w / 2 - 150, 200 + i * 50);
       textAlign(RIGHT, CENTER);
-      text(recorde_pontos[i], w / 2 + 100, 200 + i * 50);
+      text(recorde_pontos[i], w / 2 + 150, 200 + i * 50);
     }
   }
+}
+function tela_novoRecorde(){
+   /*if(true){
+   receberPontuacao();
+   }*/
+  //console.log("entrou no receber pontuação")
+  textAlign(CENTER, CENTER);
+  fill("red");
+  textSize(80);
+  text("Novo Recorde!", w / 2, 300);
+  textSize(20);
+  text("Escreva seu nickname para cravar-lo na história!", w / 2, 360)
 }
 
 function mouseClicked() {
@@ -423,17 +456,17 @@ function espaco() {
   }
   //Se na tela de jogo, carrega os meteoros
   if (tela == 5) {
+    
     for (let meteor of chuva_meteoros) {
       meteor.update(currentTime);
+      
       meteor.display();
       meteor.isColission();
+     meteor.speedUp(pontos);
     }
   }
 
-  if (currentTime > 10) {
-    ySpeed = 1000;
-    //console.log("aumentou a velocidade" + ySpeed);
-  }
+  
 }
 
 function registrarPontuacao() {
@@ -470,9 +503,10 @@ function registrarPontuacao() {
     setDataPlayer();
     nameInput.remove();
     submitButton.remove();
-    //submitButton.remove();
+    tela = 2;
   }
 }
+
 
 class Estrela {
   constructor() {
@@ -513,8 +547,10 @@ class Estrela {
 }
 
 class Meteoro {
+  
   constructor() {
     this.resetar();
+    
   }
 
   resetar() {
@@ -523,9 +559,11 @@ class Meteoro {
     this.initialAngle = random(0, 360);
     this.size = 40;
     this.radius = sqrt(random(pow(width / 2, 2)));
+    ySpeed = 4;
   }
-
+  
   update(time) {
+    
     // Define a velocidade angular (graus/segundo)
     let angularSpeed = 20;
 
@@ -536,7 +574,7 @@ class Meteoro {
     this.posX = width / 2 + this.radius * sin(angle);
 
     // Velocidade de queda do meteoro
-    let ySpeed = 4;
+    //var ySpeed = 4;
     this.posY += ySpeed;
 
     // Quando o meteoro chegar ao fundo, mova-o para o topo.
@@ -547,10 +585,24 @@ class Meteoro {
 
   //Exibir os meteoros
   display() {
+  
     fill(0, 0, 0, 0);
     noStroke();
     circle(this.posX + 21, this.posY + 20, this.size);
     image(meteoro_img, this.posX, this.posY, 44, 40);
+  }
+
+  speedUp(pontos){
+  if(pontos > 4000){
+    ySpeed = 7;
+  }else if(pontos > 3000){
+      ySpeed = 6;
+    
+  } else if(pontos > 2000){
+    ySpeed = 5;
+  }else if(pontos > 1000){
+      ySpeed = 4;
+    }
   }
 
   //Verifica se houve colisão entre o meteoro e a nave usando a função collideRectCircle da biblioteca p5.collide2D
@@ -573,14 +625,17 @@ class Meteoro {
     );
 
     if (isHit) {
-
+      if(recorde_pontos.length != 10 || pontos > recorde_pontos[recorde_pontos.length - 1]){
       nameInput = createInput();
-      nameInput.position(20, 50);
+      nameInput.position(w / 2 - (nameInput.width / 2), 380);
       submitButton = createButton('Registrar');
-      submitButton.position(nameInput.x + nameInput.width, nameInput.y);
+      submitButton.position(w / 2 - (submitButton.width / 2), nameInput.y + 30);
       submitButton.mousePressed(registrarPontuacao);
-
-      tela = 2;
+      tela = 7;
+      } else {
+        tela = 2;
+      }
+      
     }
   }
 }
